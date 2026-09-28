@@ -602,6 +602,8 @@ private fun WallpaperTab(
         }
     }
 }
+@Composable
+private fun EditorTab(
     config: WallpaperConfig,
     onChange: (WallpaperConfig) -> Unit
 ) {
