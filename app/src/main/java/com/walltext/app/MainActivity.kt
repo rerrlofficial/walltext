@@ -48,6 +48,7 @@ import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -115,7 +116,15 @@ private fun WallTextApp(context: Context) {
     val history by store.history.collectAsState(
         initial = emptyList()
     )
+val savedConfig by store.current.collectAsState(
+    initial = null
+)
 
+LaunchedEffect(savedConfig) {
+    savedConfig?.let { saved ->
+        config = saved
+    }
+}
     val picker =
         rememberLauncherForActivityResult(
             contract = ActivityResultContracts.OpenDocument()
