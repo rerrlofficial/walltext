@@ -5,10 +5,32 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
-android { namespace = "com.walltext.app"; compileSdk = 35
-    defaultConfig { applicationId = "com.walltext.app"; minSdk = 26; targetSdk = 35; versionCode = 1; versionName = "1.0.0" }
-    buildFeatures { compose = true }
-    packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
+android {
+    namespace = "com.walltext.app"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "com.walltext.app"
+        minSdk = 26
+        targetSdk = 35
+        versionCode = 1
+        versionName = "1.0.0"
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    buildFeatures {
+        compose = true
+    }
+
+    packaging {
+        resources {
+            excludes += "/META-INF/{AL2.0,LGPL2.1}"
+        }
+    }
 }
 
 dependencies {
