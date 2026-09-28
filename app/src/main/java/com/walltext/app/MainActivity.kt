@@ -15,6 +15,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -138,113 +139,196 @@ private fun WallTextApp(context: Context) {
 
         topBar = {
 
-            TopAppBar(
-
-                title = {
-
-                    Text(
-                        text = when (selectedTab) {
-                            0 -> "WallText"
-                            1 -> "Editor"
-                            2 -> "History"
-                            else -> "Settings"
-                        },
-                        style = MaterialTheme.typography.headlineSmall
-                    )
-                },
-
-                actions = {
-
-                    Button(
-                        onClick = {
-
-                            scope.launch {
-
-                                store.save(config)
-
-                                applyWallpaper(
-                                    context,
-                                    config
-                                )
-                            }
-                        },
-
-                        shape = RoundedCornerShape(50),
-
-                        modifier = Modifier.padding(
-                            end = 12.dp
-                        )
-                    ) {
-
-                        Text("Apply")
-                    }
-                },
-
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color.Black,
-                    titleContentColor = Color.White,
-                    actionIconContentColor = Color.White
-                )
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(76.dp)
+            .background(Color.Black)
+            .padding(
+                start = 18.dp,
+                end = 18.dp
             )
-        },
+    ) {
 
-        bottomBar = {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+
+            Column(
+                modifier = Modifier.weight(1f),
+                verticalArrangement =
+                    Arrangement.spacedBy(1.dp)
+            ) {
+
+                Text(
+                    text = when (selectedTab) {
+                        0 -> "WallText"
+                        1 -> "Editor"
+                        2 -> "History"
+                        else -> "Settings"
+                    },
+
+                    style =
+                        MaterialTheme.typography
+                            .headlineSmall,
+
+                    color = Color.White
+                )
+
+                Text(
+                    text = when (selectedTab) {
+                        0 -> "Your phone. Your words."
+                        1 -> "Make it yours."
+                        2 -> "Your saved designs."
+                        else -> "Control WallText."
+                    },
+
+                    style =
+                        MaterialTheme.typography
+                            .bodySmall,
+
+                    color = Color(0xFF77777C)
+                )
+            }
 
             Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(
-                        start = 12.dp,
-                        end = 12.dp,
-                        bottom = 10.dp
+                    .background(
+                        Color(0xFF1C1C1E),
+                        RoundedCornerShape(50.dp)
                     )
+                    .clickable {
+
+                        scope.launch {
+
+                            store.save(config)
+
+                            applyWallpaper(
+                                context,
+                                config
+                            )
+                        }
+                    }
+                    .padding(
+                        horizontal = 20.dp,
+                        vertical = 11.dp
+                    ),
+
+                contentAlignment =
+                    Alignment.Center
             ) {
 
-                NavigationBar(
+                Text(
+                    text = "Apply",
+                    color = Color.White,
+                    style =
+                        MaterialTheme.typography
+                            .labelLarge
+                )
+            }
+        }
+    }
+},
 
+        bottomBar = {
+
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Black)
+            .padding(
+                start = 18.dp,
+                end = 18.dp,
+                bottom = 12.dp
+            )
+    ) {
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(70.dp)
+                .background(
+                    Color(0xFF1C1C1E),
+                    RoundedCornerShape(35.dp)
+                )
+                .padding(6.dp),
+
+            verticalAlignment =
+                Alignment.CenterVertically
+        ) {
+
+            val tabs = listOf(
+                "⌂" to "Home",
+                "✦" to "Edit",
+                "◷" to "History",
+                "⚙" to "Settings"
+            )
+
+            tabs.forEachIndexed { index, item ->
+
+                val selected =
+                    selectedTab == index
+
+                Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(72.dp),
+                        .weight(1f)
+                        .fillMaxSize()
+                        .background(
+                            if (selected) {
+                                Color(0xFF2C2C2E)
+                            } else {
+                                Color.Transparent
+                            },
+                            RoundedCornerShape(30.dp)
+                        )
+                        .clickable {
+                            selectedTab = index
+                        },
 
-                    containerColor = Color(0xFF1C1C1E),
-
-                    tonalElevation = 0.dp
-
+                    contentAlignment =
+                        Alignment.Center
                 ) {
 
-                    val tabs = listOf(
-                        "⌂" to "Home",
-                        "✦" to "Edit",
-                        "◷" to "History",
-                        "⚙" to "Settings"
-                    )
+                    Column(
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally,
 
-                    tabs.forEachIndexed { index, item ->
+                        verticalArrangement =
+                            Arrangement.spacedBy(1.dp)
+                    ) {
 
-                        NavigationBarItem(
+                        Text(
+                            text = item.first,
 
-                            selected = selectedTab == index,
+                            fontSize = 22.sp,
 
-                            onClick = {
-                                selectedTab = index
-                            },
+                            color =
+                                if (selected) {
+                                    Color.White
+                                } else {
+                                    Color(0xFF77777C)
+                                }
+                        )
 
-                            icon = {
+                        Text(
+                            text = item.second,
 
-                                Text(
-                                    text = item.first,
-                                    fontSize = 22.sp
-                                )
-                            },
+                            fontSize = 11.sp,
 
-                            label = {
-                                Text(item.second)
-                            }
+                            color =
+                                if (selected) {
+                                    Color.White
+                                } else {
+                                    Color(0xFF77777C)
+                                }
                         )
                     }
                 }
             }
         }
+    }
+},
 
     ) { padding ->
 
