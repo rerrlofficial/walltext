@@ -609,130 +609,311 @@ private fun EditorTab(
 ) {
 
     Column(
-
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(
+                start = 18.dp,
+                end = 18.dp,
+                top = 10.dp,
+                bottom = 24.dp
+            ),
 
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+        verticalArrangement =
+            Arrangement.spacedBy(16.dp)
     ) {
 
-        Text(
-            text = "Edit wallpaper",
-            style = MaterialTheme.typography.headlineSmall
-        )
-
-        Text(
-            text = "Move your text directly on the preview.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
-
-        Box(
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(360.dp)
-                .background(
-                    Color(0xFF101114),
-                    RoundedCornerShape(28.dp)
-                )
+        // Header
+        Column(
+            verticalArrangement =
+                Arrangement.spacedBy(4.dp)
         ) {
 
-            config.placeholders.forEachIndexed { index, placeholder ->
+            Text(
+                text = "Edit wallpaper",
+                style =
+                    MaterialTheme.typography
+                        .headlineLarge,
+                color = Color.White
+            )
 
-                val xOffset =
-                    (placeholder.x * 320f - 160f).dp
+            Text(
+                text = "Place your words exactly where you want them.",
+                style =
+                    MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF9E9EA3)
+            )
+        }
 
-                val yOffset =
-                    (placeholder.y * 320f - 20f).dp
+        // Live preview
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(500.dp),
 
-                Text(
+            shape =
+                RoundedCornerShape(30.dp)
+        ) {
 
-                    text = previewText(
-                        placeholder
-                    ),
+            Box(
+                modifier = Modifier.fillMaxSize()
+            ) {
 
-                    color = Color.White.copy(
-                        alpha = placeholder.opacity
-                    ),
+                if (config.wallpaperUri != null) {
 
-                    fontSize = placeholder.fontSizeSp.sp,
+                    AsyncImage(
+                        model = config.wallpaperUri,
 
+                        contentDescription =
+                            "Wallpaper preview",
+
+                        modifier =
+                            Modifier.fillMaxSize(),
+
+                        contentScale =
+                            ContentScale.Crop
+                    )
+
+                } else {
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Color(
+                                    config.wallpaperColor
+                                )
+                            )
+                    )
+                }
+
+                // Subtle dark overlay
+                Box(
                     modifier = Modifier
-
-                        .fillMaxWidth(
-                            placeholder.width
+                        .fillMaxSize()
+                        .background(
+                            Color.Black.copy(
+                                alpha = 0.18f
+                            )
                         )
+                )
 
-                        .offset(
-                            x = xOffset,
-                            y = yOffset
-                        )
+                // Draggable placeholders
+                config.placeholders
+                    .forEachIndexed { index, placeholder ->
 
-                        .pointerInput(
-                            placeholder.id
-                        ) {
+                        val xOffset =
+                            (
+                                placeholder.x * 320f -
+                                    160f
+                                ).dp
 
-                            detectDragGestures {
+                        val yOffset =
+                            (
+                                placeholder.y * 420f -
+                                    20f
+                                ).dp
 
-                                    change,
-                                    dragAmount ->
+                        Text(
+                            text =
+                                previewText(
+                                    placeholder
+                                ),
 
-                                change.consume()
+                            color =
+                                Color.White.copy(
+                                    alpha =
+                                        placeholder.opacity
+                                ),
 
-                                val newX =
-                                    (
-                                        placeholder.x +
-                                            dragAmount.x / 320f
-                                        ).coerceIn(
-                                        0f,
-                                        1f
-                                    )
+                            fontSize =
+                                placeholder.fontSizeSp.sp,
 
-                                val newY =
-                                    (
-                                        placeholder.y +
-                                            dragAmount.y / 320f
-                                        ).coerceIn(
-                                        0f,
-                                        1f
-                                    )
+                            modifier = Modifier
+                                .fillMaxWidth(
+                                    placeholder.width
+                                )
+                                .offset(
+                                    x = xOffset,
+                                    y = yOffset
+                                )
+                                .pointerInput(
+                                    placeholder.id
+                                ) {
 
-                                val updated =
-                                    config.placeholders.mapIndexed {
-                                            itemIndex,
-                                            item ->
+                                    detectDragGestures {
 
-                                        if (
-                                            itemIndex == index
-                                        ) {
+                                            change,
+                                            dragAmount ->
 
-                                            item.copy(
-                                                x = newX,
-                                                y = newY
+                                        change.consume()
+
+                                        val newX =
+                                            (
+                                                placeholder.x +
+                                                    dragAmount.x /
+                                                    320f
+                                                ).coerceIn(
+                                                0f,
+                                                1f
                                             )
 
-                                        } else {
+                                        val newY =
+                                            (
+                                                placeholder.y +
+                                                    dragAmount.y /
+                                                    420f
+                                                ).coerceIn(
+                                                0f,
+                                                1f
+                                            )
 
-                                            item
-                                        }
+                                        val updated =
+                                            config
+                                                .placeholders
+                                                .mapIndexed {
+                                                        itemIndex,
+                                                        item ->
+
+                                                    if (
+                                                        itemIndex ==
+                                                        index
+                                                    ) {
+
+                                                        item.copy(
+                                                            x = newX,
+                                                            y = newY
+                                                        )
+
+                                                    } else {
+
+                                                        item
+                                                    }
+                                                }
+
+                                        onChange(
+                                            config.copy(
+                                                placeholders =
+                                                    updated
+                                            )
+                                        )
                                     }
+                                }
+                        )
+                    }
 
-                                onChange(
-                                    config.copy(
-                                        placeholders = updated
-                                    )
+                if (
+                    config.placeholders.isEmpty()
+                ) {
+
+                    Column(
+                        modifier =
+                            Modifier.align(
+                                Alignment.Center
+                            ),
+
+                        horizontalAlignment =
+                            Alignment.CenterHorizontally,
+
+                        verticalArrangement =
+                            Arrangement.spacedBy(6.dp)
+                    ) {
+
+                        Text(
+                            text = "＋",
+                            fontSize = 40.sp,
+                            color = Color.White
+                        )
+
+                        Text(
+                            text = "Add your first text holder",
+                            style =
+                                MaterialTheme.typography
+                                    .titleLarge,
+                            color = Color.White
+                        )
+
+                        Text(
+                            text =
+                                "Then drag it anywhere on the wallpaper.",
+                            color =
+                                Color.White.copy(
+                                    alpha = 0.65f
                                 )
-                            }
-                        }
+                        )
+                    }
+                }
+            }
+        }
+
+        // Preview hint
+        Card(
+            modifier =
+                Modifier.fillMaxWidth(),
+
+            shape =
+                RoundedCornerShape(22.dp)
+        ) {
+
+            Row(
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
+                Column(
+                    modifier =
+                        Modifier.weight(1f),
+
+                    verticalArrangement =
+                        Arrangement.spacedBy(4.dp)
+                ) {
+
+                    Text(
+                        text = "Live preview",
+
+                        style =
+                            MaterialTheme.typography
+                                .titleMedium,
+
+                        color = Color.White
+                    )
+
+                    Text(
+                        text =
+                            "Press and drag text to reposition it.",
+
+                        color =
+                            Color(0xFF9E9EA3)
+                    )
+                }
+
+                Text(
+                    text =
+                        "${config.placeholders.size}/5",
+
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+
+                    color = Color.White
                 )
             }
         }
 
-        Spacer(
-            modifier = Modifier.height(8.dp)
+        // Placeholder list
+        Text(
+            text = "Text holders",
+
+            style =
+                MaterialTheme.typography
+                    .headlineSmall,
+
+            color = Color.White
         )
 
         config.placeholders.forEachIndexed {
@@ -748,18 +929,19 @@ private fun EditorTab(
                 onChange = { newPlaceholder ->
 
                     val updated =
-                        config.placeholders.mapIndexed {
-                                itemIndex,
-                                item ->
+                        config.placeholders
+                            .mapIndexed {
+                                    itemIndex,
+                                    item ->
 
-                            if (
-                                itemIndex == index
-                            ) {
-                                newPlaceholder
-                            } else {
-                                item
+                                if (
+                                    itemIndex == index
+                                ) {
+                                    newPlaceholder
+                                } else {
+                                    item
+                                }
                             }
-                        }
 
                     onChange(
                         config.copy(
@@ -771,12 +953,13 @@ private fun EditorTab(
                 onDelete = {
 
                     val updated =
-                        config.placeholders.filterIndexed {
-                                itemIndex,
-                                _ ->
+                        config.placeholders
+                            .filterIndexed {
+                                    itemIndex,
+                                    _ ->
 
-                            itemIndex != index
-                        }
+                                itemIndex != index
+                            }
 
                     onChange(
                         config.copy(
@@ -787,6 +970,7 @@ private fun EditorTab(
             )
         }
 
+        // Add placeholder
         if (
             config.placeholders.size < 5
         ) {
@@ -819,15 +1003,39 @@ private fun EditorTab(
 
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(56.dp),
+                    .height(58.dp),
 
-                shape = RoundedCornerShape(28.dp)
+                shape =
+                    RoundedCornerShape(30.dp)
             ) {
 
                 Text(
-                    "＋  Add placeholder"
+                    text =
+                        "＋  Add text holder",
+
+                    fontSize = 17.sp
                 )
             }
+        }
+
+        if (
+            config.placeholders.size >= 5
+        ) {
+
+            Text(
+                text =
+                    "Maximum of 5 text holders reached.",
+
+                modifier =
+                    Modifier.fillMaxWidth(),
+
+                color =
+                    Color(0xFF77777C),
+
+                textAlign =
+                    androidx.compose.ui.text.style
+                        .TextAlign.Center
+            )
         }
     }
 }
