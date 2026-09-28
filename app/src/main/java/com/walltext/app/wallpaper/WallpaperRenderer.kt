@@ -15,7 +15,20 @@ object WallpaperRenderer {
 
     private fun drawPlaceholder(c: Canvas, p: TextPlaceholder, index: Int, w: Int, h: Int) {
         val paint = Paint(Paint.ANTI_ALIAS_FLAG).apply { color = Color.WHITE; alpha = (255 * p.opacity).toInt(); textSize = p.fontSizeSp * (w / 1080f); typeface = Typeface.create("sans", Typeface.NORMAL) }
-        val text = p.normalizedEntries().let { if (it.isEmpty()) "" else it[index % it.size] }
+        val text = p.normalizedEntries().let {
+    if (it.isEmpty()) {
+        ""
+    } else {
+        val entryIndex =
+            if (p.mode == DisplayMode.DYNAMIC) {
+                index % it.size
+            } else {
+                0
+            }
+
+        it[entryIndex]
+    }
+}
         val left = (p.x * w - p.width * w / 2f).coerceIn(0f, w.toFloat())
         val top = (p.y * h).coerceIn(0f, h.toFloat())
         when (p.type) {
