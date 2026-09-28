@@ -43,6 +43,7 @@ import androidx.compose.material3.Slider
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -133,11 +134,135 @@ private fun WallTextApp(context: Context) {
         }
 
     Scaffold(
+    containerColor = Color.Black,
 
-        topBar = {
-            TopAppBar(
-                title = {
-                    Text("WallText")
+    topBar = {
+        TopAppBar(
+            title = {
+                Text(
+                    text = when (selectedTab) {
+                        0 -> "WallText"
+                        1 -> "Editor"
+                        2 -> "History"
+                        else -> "Settings"
+                    },
+                    style = MaterialTheme.typography.headlineSmall
+                )
+            },
+            actions = {
+                Button(
+                    onClick = {
+                        scope.launch {
+                            store.save(config)
+                            applyWallpaper(context, config)
+                        }
+                    },
+                    shape = RoundedCornerShape(50),
+                    modifier = Modifier.padding(end = 12.dp)
+                ) {
+                    Text("Apply")
+                }
+            },
+            colors = TopAppBarDefaults.topAppBarColors(
+                containerColor = Color.Black,
+                titleContentColor = Color.White,
+                actionIconContentColor = Color.White
+            )
+        )
+    },
+
+    bottomBar = {
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(
+                    start = 12.dp,
+                    end = 12.dp,
+                    bottom = 10.dp
+                )
+        ) {
+            NavigationBar(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(72.dp),
+                containerColor = Color(0xFF1C1C1E),
+                tonalElevation = 0.dp
+            ) {
+                val tabs = listOf(
+                    "⌂" to "Home",
+                    "✦" to "Edit",
+                    "◷" to "History",
+                    "⚙" to "Settings"
+                )
+
+                tabs.forEachIndexed { index, item ->
+
+                    NavigationBarItem(
+                        selected = selectedTab == index,
+                        onClick = {
+                            selectedTab = index
+                        },
+                        icon = {
+                            Text(
+                                text = item.first,
+                                fontSize = 22.sp
+                            )
+                        },
+                        label = {
+                            Text(item.second)
+                        }
+                    )
+                }
+            }
+        }
+    }
+
+) { padding ->
+
+    Box(
+        modifier = Modifier
+            .padding(padding)
+            .fillMaxSize()
+            .background(Color.Black)
+    ) {
+
+        when (selectedTab) {
+
+            0 -> WallpaperTab(
+                config = config,
+                onChange = { newConfig ->
+                    config = newConfig
+                },
+                onPick = {
+                    picker.launch(
+                        arrayOf("image/*")
+                    )
+                }
+            )
+
+            1 -> EditorTab(
+                config = config,
+                onChange = { newConfig ->
+                    config = newConfig
+                }
+            )
+
+            2 -> HistoryTab(
+                items = history,
+                onUse = { oldConfig ->
+                    config = oldConfig
+                }
+            )
+
+            3 -> SettingsTab(
+                config = config,
+                onChange = { newConfig ->
+                    config = newConfig
+                }
+            )
+        }
+    }
+}
                 },
                 actions = {
 
