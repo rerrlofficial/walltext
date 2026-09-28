@@ -21,9 +21,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -31,8 +30,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FilterChip
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -134,179 +133,114 @@ private fun WallTextApp(context: Context) {
         }
 
     Scaffold(
-    containerColor = Color.Black,
+        containerColor = Color.Black,
 
-    topBar = {
-        TopAppBar(
-            title = {
-                Text(
-                    text = when (selectedTab) {
-                        0 -> "WallText"
-                        1 -> "Editor"
-                        2 -> "History"
-                        else -> "Settings"
-                    },
-                    style = MaterialTheme.typography.headlineSmall
-                )
-            },
-            actions = {
-                Button(
-                    onClick = {
-                        scope.launch {
-                            store.save(config)
-                            applyWallpaper(context, config)
-                        }
-                    },
-                    shape = RoundedCornerShape(50),
-                    modifier = Modifier.padding(end = 12.dp)
-                ) {
-                    Text("Apply")
-                }
-            },
-            colors = TopAppBarDefaults.topAppBarColors(
-                containerColor = Color.Black,
-                titleContentColor = Color.White,
-                actionIconContentColor = Color.White
-            )
-        )
-    },
+        topBar = {
 
-    bottomBar = {
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(
-                    start = 12.dp,
-                    end = 12.dp,
-                    bottom = 10.dp
-                )
-        ) {
-            NavigationBar(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(72.dp),
-                containerColor = Color(0xFF1C1C1E),
-                tonalElevation = 0.dp
-            ) {
-                val tabs = listOf(
-                    "⌂" to "Home",
-                    "✦" to "Edit",
-                    "◷" to "History",
-                    "⚙" to "Settings"
-                )
+            TopAppBar(
 
-                tabs.forEachIndexed { index, item ->
+                title = {
 
-                    NavigationBarItem(
-                        selected = selectedTab == index,
-                        onClick = {
-                            selectedTab = index
+                    Text(
+                        text = when (selectedTab) {
+                            0 -> "WallText"
+                            1 -> "Editor"
+                            2 -> "History"
+                            else -> "Settings"
                         },
-                        icon = {
-                            Text(
-                                text = item.first,
-                                fontSize = 22.sp
-                            )
-                        },
-                        label = {
-                            Text(item.second)
-                        }
+                        style = MaterialTheme.typography.headlineSmall
                     )
-                }
-            }
-        }
-    }
-
-) { padding ->
-
-    Box(
-        modifier = Modifier
-            .padding(padding)
-            .fillMaxSize()
-            .background(Color.Black)
-    ) {
-
-        when (selectedTab) {
-
-            0 -> WallpaperTab(
-                config = config,
-                onChange = { newConfig ->
-                    config = newConfig
                 },
-                onPick = {
-                    picker.launch(
-                        arrayOf("image/*")
-                    )
-                }
-            )
 
-            1 -> EditorTab(
-                config = config,
-                onChange = { newConfig ->
-                    config = newConfig
-                }
-            )
-
-            2 -> HistoryTab(
-                items = history,
-                onUse = { oldConfig ->
-                    config = oldConfig
-                }
-            )
-
-            3 -> SettingsTab(
-                config = config,
-                onChange = { newConfig ->
-                    config = newConfig
-                }
-            )
-        }
-    }
-}
-                },
                 actions = {
 
-                    TextButton(
+                    Button(
                         onClick = {
 
                             scope.launch {
+
                                 store.save(config)
+
                                 applyWallpaper(
                                     context,
                                     config
                                 )
                             }
-                        }
+                        },
+
+                        shape = RoundedCornerShape(50),
+
+                        modifier = Modifier.padding(
+                            end = 12.dp
+                        )
                     ) {
+
                         Text("Apply")
                     }
-                }
+                },
+
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Black,
+                    titleContentColor = Color.White,
+                    actionIconContentColor = Color.White
+                )
             )
         },
 
         bottomBar = {
 
-            NavigationBar {
-
-                val tabs = listOf(
-                    "Wallpaper",
-                    "Editor",
-                    "History",
-                    "Settings"
-                )
-
-                tabs.forEachIndexed { index, title ->
-
-                    NavigationBarItem(
-                        selected = selectedTab == index,
-                        onClick = {
-                            selectedTab = index
-                        },
-                        icon = {},
-                        label = {
-                            Text(title)
-                        }
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(
+                        start = 12.dp,
+                        end = 12.dp,
+                        bottom = 10.dp
                     )
+            ) {
+
+                NavigationBar(
+
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(72.dp),
+
+                    containerColor = Color(0xFF1C1C1E),
+
+                    tonalElevation = 0.dp
+
+                ) {
+
+                    val tabs = listOf(
+                        "⌂" to "Home",
+                        "✦" to "Edit",
+                        "◷" to "History",
+                        "⚙" to "Settings"
+                    )
+
+                    tabs.forEachIndexed { index, item ->
+
+                        NavigationBarItem(
+
+                            selected = selectedTab == index,
+
+                            onClick = {
+                                selectedTab = index
+                            },
+
+                            icon = {
+
+                                Text(
+                                    text = item.first,
+                                    fontSize = 22.sp
+                                )
+                            },
+
+                            label = {
+                                Text(item.second)
+                            }
+                        )
+                    }
                 }
             }
         }
@@ -317,42 +251,60 @@ private fun WallTextApp(context: Context) {
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
+                .background(Color.Black)
         ) {
 
             when (selectedTab) {
 
-                0 -> WallpaperTab(
-                    config = config,
-                    onChange = { newConfig ->
-                        config = newConfig
-                    },
-                    onPick = {
-                        picker.launch(
-                            arrayOf("image/*")
-                        )
-                    }
-                )
+                0 -> {
 
-                1 -> EditorTab(
-                    config = config,
-                    onChange = { newConfig ->
-                        config = newConfig
-                    }
-                )
+                    WallpaperTab(
+                        config = config,
 
-                2 -> HistoryTab(
-                    items = history,
-                    onUse = { oldConfig ->
-                        config = oldConfig
-                    }
-                )
+                        onChange = { newConfig ->
+                            config = newConfig
+                        },
 
-                3 -> SettingsTab(
-                    config = config,
-                    onChange = { newConfig ->
-                        config = newConfig
-                    }
-                )
+                        onPick = {
+                            picker.launch(
+                                arrayOf("image/*")
+                            )
+                        }
+                    )
+                }
+
+                1 -> {
+
+                    EditorTab(
+                        config = config,
+
+                        onChange = { newConfig ->
+                            config = newConfig
+                        }
+                    )
+                }
+
+                2 -> {
+
+                    HistoryTab(
+                        items = history,
+
+                        onUse = { oldConfig ->
+                            config = oldConfig
+                        }
+                    )
+                }
+
+                3 -> {
+
+                    SettingsTab(
+                        config = config,
+
+                        onChange = { newConfig ->
+                            config = newConfig
+                        }
+                    )
+                }
             }
         }
     }
@@ -366,10 +318,12 @@ private fun WallpaperTab(
 ) {
 
     Column(
+
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
+
         verticalArrangement = Arrangement.spacedBy(14.dp)
     ) {
 
@@ -378,54 +332,98 @@ private fun WallpaperTab(
             style = MaterialTheme.typography.headlineSmall
         )
 
+        Text(
+            text = "Choose the background for your lock screen.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+
         Card(
+
             modifier = Modifier
                 .fillMaxWidth()
-                .height(420.dp)
+                .height(420.dp),
+
+            shape = RoundedCornerShape(28.dp)
         ) {
 
             Box(
                 modifier = Modifier.fillMaxSize(),
+
                 contentAlignment = Alignment.Center
             ) {
 
                 if (config.wallpaperUri != null) {
 
                     AsyncImage(
+
                         model = config.wallpaperUri,
+
                         contentDescription = "Selected wallpaper",
+
                         modifier = Modifier.fillMaxSize(),
+
                         contentScale = ContentScale.Crop
                     )
 
                 } else {
 
                     Box(
+
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
                                 Color(config.wallpaperColor)
                             ),
+
                         contentAlignment = Alignment.Center
                     ) {
 
-                        Text(
-                            text = "No wallpaper selected",
-                            color = Color.White
-                        )
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally
+                        ) {
+
+                            Text(
+                                text = "No wallpaper",
+                                color = Color.White,
+                                style = MaterialTheme.typography.titleLarge
+                            )
+
+                            Spacer(
+                                modifier = Modifier.height(6.dp)
+                            )
+
+                            Text(
+                                text = "Choose a photo to get started.",
+                                color = Color.White.copy(
+                                    alpha = 0.65f
+                                )
+                            )
+                        }
                     }
                 }
             }
         }
 
         Button(
+
             onClick = onPick,
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(56.dp),
+
+            shape = RoundedCornerShape(28.dp)
         ) {
-            Text("Choose wallpaper")
+
+            Text(
+                text = "＋  Choose wallpaper",
+                fontSize = 16.sp
+            )
         }
 
         OutlinedButton(
+
             onClick = {
 
                 onChange(
@@ -435,8 +433,14 @@ private fun WallpaperTab(
                     )
                 )
             },
-            modifier = Modifier.fillMaxWidth()
+
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(52.dp),
+
+            shape = RoundedCornerShape(26.dp)
         ) {
+
             Text("Use solid background")
         }
     }
@@ -449,30 +453,34 @@ private fun EditorTab(
 ) {
 
     Column(
+
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
             .padding(16.dp),
+
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
         Text(
-            text = "Text placeholders",
+            text = "Edit wallpaper",
             style = MaterialTheme.typography.headlineSmall
         )
 
         Text(
-            text = "Up to 5 placeholders can be placed on the wallpaper.",
-            style = MaterialTheme.typography.bodyMedium
+            text = "Move your text directly on the preview.",
+            style = MaterialTheme.typography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
 
         Box(
+
             modifier = Modifier
                 .fillMaxWidth()
                 .height(360.dp)
                 .background(
                     Color(0xFF101114),
-                    RoundedCornerShape(20.dp)
+                    RoundedCornerShape(28.dp)
                 )
         ) {
 
@@ -485,20 +493,36 @@ private fun EditorTab(
                     (placeholder.y * 320f - 20f).dp
 
                 Text(
-                    text = previewText(placeholder),
+
+                    text = previewText(
+                        placeholder
+                    ),
+
                     color = Color.White.copy(
                         alpha = placeholder.opacity
                     ),
+
                     fontSize = placeholder.fontSizeSp.sp,
+
                     modifier = Modifier
-                        .fillMaxWidth(placeholder.width)
+
+                        .fillMaxWidth(
+                            placeholder.width
+                        )
+
                         .offset(
                             x = xOffset,
                             y = yOffset
                         )
-                        .pointerInput(placeholder.id) {
 
-                            detectDragGestures { change, dragAmount ->
+                        .pointerInput(
+                            placeholder.id
+                        ) {
+
+                            detectDragGestures {
+
+                                    change,
+                                    dragAmount ->
 
                                 change.consume()
 
@@ -506,18 +530,28 @@ private fun EditorTab(
                                     (
                                         placeholder.x +
                                             dragAmount.x / 320f
-                                        ).coerceIn(0f, 1f)
+                                        ).coerceIn(
+                                        0f,
+                                        1f
+                                    )
 
                                 val newY =
                                     (
                                         placeholder.y +
                                             dragAmount.y / 320f
-                                        ).coerceIn(0f, 1f)
+                                        ).coerceIn(
+                                        0f,
+                                        1f
+                                    )
 
                                 val updated =
-                                    config.placeholders.mapIndexed { itemIndex, item ->
+                                    config.placeholders.mapIndexed {
+                                            itemIndex,
+                                            item ->
 
-                                        if (itemIndex == index) {
+                                        if (
+                                            itemIndex == index
+                                        ) {
 
                                             item.copy(
                                                 x = newX,
@@ -525,6 +559,7 @@ private fun EditorTab(
                                             )
 
                                         } else {
+
                                             item
                                         }
                                     }
@@ -544,18 +579,26 @@ private fun EditorTab(
             modifier = Modifier.height(8.dp)
         )
 
-        config.placeholders.forEachIndexed { index, placeholder ->
+        config.placeholders.forEachIndexed {
+                index,
+                placeholder ->
 
             PlaceholderCard(
+
                 index = index,
+
                 placeholder = placeholder,
 
                 onChange = { newPlaceholder ->
 
                     val updated =
-                        config.placeholders.mapIndexed { itemIndex, item ->
+                        config.placeholders.mapIndexed {
+                                itemIndex,
+                                item ->
 
-                            if (itemIndex == index) {
+                            if (
+                                itemIndex == index
+                            ) {
                                 newPlaceholder
                             } else {
                                 item
@@ -572,7 +615,10 @@ private fun EditorTab(
                 onDelete = {
 
                     val updated =
-                        config.placeholders.filterIndexed { itemIndex, _ ->
+                        config.placeholders.filterIndexed {
+                                itemIndex,
+                                _ ->
+
                             itemIndex != index
                         }
 
@@ -585,27 +631,46 @@ private fun EditorTab(
             )
         }
 
-        if (config.placeholders.size < 5) {
+        if (
+            config.placeholders.size < 5
+        ) {
 
             Button(
+
                 onClick = {
 
                     val newPlaceholder =
                         TextPlaceholder(
-                            id = UUID.randomUUID().toString(),
-                            title = "Placeholder ${config.placeholders.size + 1}"
+
+                            id = UUID
+                                .randomUUID()
+                                .toString(),
+
+                            title =
+                                "Placeholder ${
+                                    config.placeholders.size + 1
+                                }"
                         )
 
                     onChange(
                         config.copy(
                             placeholders =
-                                config.placeholders + newPlaceholder
+                                config.placeholders +
+                                    newPlaceholder
                         )
                     )
                 },
-                modifier = Modifier.fillMaxWidth()
+
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
+
+                shape = RoundedCornerShape(28.dp)
             ) {
-                Text("+ Add placeholder")
+
+                Text(
+                    "＋  Add placeholder"
+                )
             }
         }
     }
@@ -624,38 +689,55 @@ private fun PlaceholderCard(
     }
 
     Card(
-        modifier = Modifier.fillMaxWidth()
+
+        modifier = Modifier.fillMaxWidth(),
+
+        shape = RoundedCornerShape(22.dp)
     ) {
 
         Column(
+
             modifier = Modifier.padding(14.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+
+            verticalArrangement =
+                Arrangement.spacedBy(8.dp)
         ) {
 
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
             ) {
 
                 Text(
+
                     text = placeholder.title,
+
                     modifier = Modifier.weight(1f),
-                    style = MaterialTheme.typography.titleMedium
+
+                    style =
+                        MaterialTheme.typography.titleMedium
                 )
 
                 TextButton(
+
                     onClick = {
                         expanded = !expanded
                     }
                 ) {
+
                     Text(
-                        if (expanded) "Close"
-                        else "Edit"
+                        if (expanded) {
+                            "Close"
+                        } else {
+                            "Edit"
+                        }
                     )
                 }
 
                 TextButton(
                     onClick = onDelete
                 ) {
+
                     Text("Delete")
                 }
             }
@@ -663,96 +745,141 @@ private fun PlaceholderCard(
             if (expanded) {
 
                 OutlinedTextField(
-                    value = placeholder.title,
+
+                    value =
+                        placeholder.title,
+
                     onValueChange = { value ->
+
                         onChange(
                             placeholder.copy(
                                 title = value
                             )
                         )
                     },
+
                     label = {
                         Text("Name")
                     },
+
                     singleLine = true,
-                    modifier = Modifier.fillMaxWidth()
+
+                    modifier =
+                        Modifier.fillMaxWidth()
                 )
 
                 Text("Type")
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                    horizontalArrangement =
+                        Arrangement.spacedBy(8.dp)
                 ) {
 
-                    PlaceholderType.values().forEach { type ->
+                    PlaceholderType
+                        .values()
+                        .forEach { type ->
 
-                        FilterChip(
-                            selected = placeholder.type == type,
-                            onClick = {
-                                onChange(
-                                    placeholder.copy(
-                                        type = type
+                            FilterChip(
+
+                                selected =
+                                    placeholder.type ==
+                                        type,
+
+                                onClick = {
+
+                                    onChange(
+                                        placeholder.copy(
+                                            type = type
+                                        )
                                     )
-                                )
-                            },
-                            label = {
-                                Text(
-                                    type.name
-                                        .lowercase()
-                                        .replaceFirstChar { character ->
-                                            character.uppercase()
-                                        }
-                                )
-                            }
-                        )
-                    }
+                                },
+
+                                label = {
+
+                                    Text(
+                                        type.name
+                                            .lowercase()
+                                            .replaceFirstChar {
+                                                character ->
+                                                character
+                                                    .uppercase()
+                                            }
+                                    )
+                                }
+                            )
+                        }
                 }
 
                 Text("Display mode")
 
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+                    horizontalArrangement =
+                        Arrangement.spacedBy(8.dp)
                 ) {
 
                     FilterChip(
-                        selected = placeholder.mode == DisplayMode.STATIC,
+
+                        selected =
+                            placeholder.mode ==
+                                DisplayMode.STATIC,
+
                         onClick = {
+
                             onChange(
                                 placeholder.copy(
-                                    mode = DisplayMode.STATIC
+                                    mode =
+                                        DisplayMode.STATIC
                                 )
                             )
                         },
+
                         label = {
                             Text("Static")
                         }
                     )
 
                     FilterChip(
-                        selected = placeholder.mode == DisplayMode.DYNAMIC,
+
+                        selected =
+                            placeholder.mode ==
+                                DisplayMode.DYNAMIC,
+
                         onClick = {
+
                             onChange(
                                 placeholder.copy(
-                                    mode = DisplayMode.DYNAMIC
+                                    mode =
+                                        DisplayMode.DYNAMIC
                                 )
                             )
                         },
+
                         label = {
                             Text("Dynamic")
                         }
                     )
                 }
 
-                if (placeholder.mode == DisplayMode.STATIC) {
+                if (
+                    placeholder.mode ==
+                    DisplayMode.STATIC
+                ) {
 
                     OutText(
-                        value = placeholder.entries.firstOrNull()
-                            ?: "",
+
+                        value =
+                            placeholder.entries
+                                .firstOrNull()
+                                ?: "",
+
                         onValueChange = { value ->
 
                             onChange(
                                 placeholder.copy(
-                                    entries = listOf(value)
+                                    entries =
+                                        listOf(value)
                                 )
                             )
                         }
@@ -760,22 +887,38 @@ private fun PlaceholderCard(
 
                 } else {
 
-                    Text("Dynamic entries (maximum 10)")
+                    Text(
+                        "Dynamic entries (maximum 10)"
+                    )
 
                     placeholder.entries
                         .take(10)
-                        .forEachIndexed { entryIndex, entry ->
+                        .forEachIndexed {
+                                entryIndex,
+                                entry ->
 
                             OutText(
+
                                 value = entry,
-                                label = "Entry ${entryIndex + 1}",
-                                onValueChange = { value ->
+
+                                label =
+                                    "Entry ${
+                                        entryIndex + 1
+                                    }",
+
+                                onValueChange = {
+                                        value ->
 
                                     val updated =
                                         placeholder.entries
-                                            .mapIndexed { itemIndex, item ->
+                                            .mapIndexed {
+                                                    itemIndex,
+                                                    item ->
 
-                                                if (itemIndex == entryIndex) {
+                                                if (
+                                                    itemIndex ==
+                                                    entryIndex
+                                                ) {
                                                     value
                                                 } else {
                                                     item
@@ -784,37 +927,51 @@ private fun PlaceholderCard(
 
                                     onChange(
                                         placeholder.copy(
-                                            entries = updated
+                                            entries =
+                                                updated
                                         )
                                     )
                                 }
                             )
                         }
 
-                    if (placeholder.entries.size < 10) {
+                    if (
+                        placeholder.entries.size < 10
+                    ) {
 
                         TextButton(
+
                             onClick = {
 
                                 onChange(
                                     placeholder.copy(
                                         entries =
-                                            placeholder.entries + ""
+                                            placeholder.entries +
+                                                ""
                                     )
                                 )
                             }
                         ) {
-                            Text("+ Add entry")
+
+                            Text(
+                                "+ Add entry"
+                            )
                         }
                     }
                 }
 
                 Text(
-                    text = "Font size: ${placeholder.fontSizeSp.toInt()} sp"
+                    text =
+                        "Font size: ${
+                            placeholder.fontSizeSp.toInt()
+                        } sp"
                 )
 
                 Slider(
-                    value = placeholder.fontSizeSp,
+
+                    value =
+                        placeholder.fontSizeSp,
+
                     onValueChange = { value ->
 
                         onChange(
@@ -823,7 +980,9 @@ private fun PlaceholderCard(
                             )
                         )
                     },
-                    valueRange = 12f..48f
+
+                    valueRange =
+                        12f..48f
                 )
             }
         }
@@ -835,23 +994,30 @@ private fun previewText(
 ): String {
 
     val text =
-        placeholder.entries.firstOrNull()
+        placeholder.entries
+            .firstOrNull()
             ?: ""
 
-    return when (placeholder.type) {
+    return when (
+        placeholder.type
+    ) {
 
         PlaceholderType.TEXT ->
             text
 
         PlaceholderType.BULLETS ->
-            text.lines().joinToString("\n") { line ->
-                "• $line"
-            }
+
+            text.lines()
+                .joinToString("\n") { line ->
+                    "• $line"
+                }
 
         PlaceholderType.CHECKLIST ->
-            text.lines().joinToString("\n") { line ->
-                "☐ $line"
-            }
+
+            text.lines()
+                .joinToString("\n") { line ->
+                    "☐ $line"
+                }
 
         PlaceholderType.TABLE ->
             text
@@ -866,12 +1032,17 @@ private fun OutText(
 ) {
 
     OutlinedTextField(
+
         value = value,
+
         onValueChange = onValueChange,
+
         label = {
             Text(label)
         },
+
         minLines = 3,
+
         modifier = Modifier.fillMaxWidth()
     )
 }
@@ -885,42 +1056,66 @@ private fun HistoryTab(
     if (items.isEmpty()) {
 
         Box(
+
             modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
+
+            contentAlignment =
+                Alignment.Center
         ) {
-            Text("No history yet")
+
+            Text(
+                "No history yet"
+            )
         }
 
     } else {
 
         LazyColumn(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(10.dp)
+
+            verticalArrangement =
+                Arrangement.spacedBy(10.dp)
         ) {
 
             items(items) { config ->
 
                 Card(
-                    modifier = Modifier.fillMaxWidth()
+
+                    modifier =
+                        Modifier.fillMaxWidth(),
+
+                    shape =
+                        RoundedCornerShape(22.dp)
                 ) {
 
                     Row(
-                        modifier = Modifier.padding(14.dp),
-                        verticalAlignment = Alignment.CenterVertically
+
+                        modifier =
+                            Modifier.padding(14.dp),
+
+                        verticalAlignment =
+                            Alignment.CenterVertically
                     ) {
 
                         Text(
-                            text = "${config.placeholders.size} placeholders",
-                            modifier = Modifier.weight(1f)
+
+                            text =
+                                "${config.placeholders.size} placeholders",
+
+                            modifier =
+                                Modifier.weight(1f)
                         )
 
                         TextButton(
+
                             onClick = {
                                 onUse(config)
                             }
                         ) {
+
                             Text("Use")
                         }
                     }
@@ -937,48 +1132,94 @@ private fun SettingsTab(
 ) {
 
     Column(
+
         modifier = Modifier
             .fillMaxWidth()
+            .verticalScroll(
+                rememberScrollState()
+            )
             .padding(16.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
+
+        verticalArrangement =
+            Arrangement.spacedBy(14.dp)
     ) {
 
         Text(
+
             text = "Settings",
-            style = MaterialTheme.typography.headlineSmall
+
+            style =
+                MaterialTheme.typography.headlineSmall
         )
 
-        Text("Dynamic wallpaper refresh interval")
+        Text(
+            text =
+                "Dynamic wallpaper refresh interval",
+
+            style =
+                MaterialTheme.typography.titleMedium
+        )
 
         Row(
-            horizontalArrangement = Arrangement.spacedBy(8.dp)
+
+            horizontalArrangement =
+                Arrangement.spacedBy(8.dp)
         ) {
 
-            listOf(15, 30, 60).forEach { minutes ->
+            listOf(
+                15,
+                30,
+                60
+            ).forEach { minutes ->
 
                 FilterChip(
+
                     selected =
-                        config.dynamicIntervalMinutes == minutes,
+                        config.dynamicIntervalMinutes ==
+                            minutes,
 
                     onClick = {
 
                         onChange(
                             config.copy(
-                                dynamicIntervalMinutes = minutes
+                                dynamicIntervalMinutes =
+                                    minutes
                             )
                         )
                     },
 
                     label = {
-                        Text("$minutes min")
+
+                        Text(
+                            "$minutes min"
+                        )
                     }
                 )
             }
         }
 
-        Text(
-            "Dynamic mode supports up to 10 entries per placeholder."
-        )
+        Card(
+
+            modifier =
+                Modifier.fillMaxWidth(),
+
+            shape =
+                RoundedCornerShape(22.dp)
+        ) {
+
+            Text(
+
+                text =
+                    "Dynamic mode supports up to 10 entries per placeholder.",
+
+                modifier =
+                    Modifier.padding(16.dp),
+
+                color =
+                    MaterialTheme.colorScheme
+                        .onSurfaceVariant
+            )
+        }
     }
 }
 
@@ -988,24 +1229,37 @@ private fun applyWallpaper(
 ) {
 
     val wallpaperManager =
-        WallpaperManager.getInstance(context)
+        WallpaperManager.getInstance(
+            context
+        )
 
     val baseBitmap: Bitmap? =
-        if (config.wallpaperUri != null) {
+
+        if (
+            config.wallpaperUri != null
+        ) {
 
             context.contentResolver
+
                 .openInputStream(
-                    Uri.parse(config.wallpaperUri)
+                    Uri.parse(
+                        config.wallpaperUri
+                    )
                 )
+
                 ?.use { input ->
-                    BitmapFactory.decodeStream(input)
+
+                    BitmapFactory
+                        .decodeStream(input)
                 }
 
         } else {
+
             null
         }
 
     val bitmap =
+
         baseBitmap
             ?: Bitmap.createBitmap(
                 1080,
@@ -1034,33 +1288,49 @@ private fun applyWallpaper(
     )
 
     wallpaperManager.setStream(
-        output.toByteArray().inputStream(),
+
+        output
+            .toByteArray()
+            .inputStream(),
+
         null,
+
         true,
+
         WallpaperManager.FLAG_LOCK
     )
 
     val hasDynamic =
         config.placeholders.any { placeholder ->
-            placeholder.mode == DisplayMode.DYNAMIC
+
+            placeholder.mode ==
+                DisplayMode.DYNAMIC
         }
 
     val workManager =
-        WorkManager.getInstance(context)
+        WorkManager.getInstance(
+            context
+        )
 
     if (hasDynamic) {
 
         val request =
             PeriodicWorkRequestBuilder<
-                com.walltext.app.wallpaper.DynamicWallpaperWorker
+                com.walltext.app.wallpaper
+                    .DynamicWallpaperWorker
             >(
-                config.dynamicIntervalMinutes.toLong(),
+                config.dynamicIntervalMinutes
+                    .toLong(),
+
                 TimeUnit.MINUTES
             ).build()
 
         workManager.enqueueUniquePeriodicWork(
+
             "dynamic_wallpaper",
+
             ExistingPeriodicWorkPolicy.UPDATE,
+
             request
         )
 
