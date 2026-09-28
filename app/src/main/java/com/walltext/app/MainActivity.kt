@@ -318,48 +318,57 @@ private fun WallpaperTab(
 ) {
 
     Column(
-
         modifier = Modifier
             .fillMaxSize()
             .verticalScroll(rememberScrollState())
-            .padding(16.dp),
+            .padding(
+                start = 18.dp,
+                end = 18.dp,
+                top = 10.dp,
+                bottom = 24.dp
+            ),
 
-        verticalArrangement = Arrangement.spacedBy(14.dp)
+        verticalArrangement = Arrangement.spacedBy(18.dp)
     ) {
 
-        Text(
-            text = "Wallpaper",
-            style = MaterialTheme.typography.headlineSmall
-        )
+        // Large hero heading
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
 
-        Text(
-            text = "Choose the background for your lock screen.",
-            style = MaterialTheme.typography.bodyMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+            Text(
+                text = "Your wallpaper",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
 
+            Text(
+                text = "Your phone. Your words.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF9E9EA3)
+            )
+        }
+
+        // Large wallpaper preview
         Card(
-
             modifier = Modifier
                 .fillMaxWidth()
-                .height(420.dp),
+                .height(470.dp),
 
-            shape = RoundedCornerShape(28.dp)
+            shape = RoundedCornerShape(30.dp)
         ) {
 
             Box(
-                modifier = Modifier.fillMaxSize(),
-
-                contentAlignment = Alignment.Center
+                modifier = Modifier.fillMaxSize()
             ) {
 
                 if (config.wallpaperUri != null) {
 
                     AsyncImage(
-
                         model = config.wallpaperUri,
 
-                        contentDescription = "Selected wallpaper",
+                        contentDescription =
+                            "Selected wallpaper",
 
                         modifier = Modifier.fillMaxSize(),
 
@@ -369,35 +378,48 @@ private fun WallpaperTab(
                 } else {
 
                     Box(
-
                         modifier = Modifier
                             .fillMaxSize()
                             .background(
-                                Color(config.wallpaperColor)
+                                Color(
+                                    config.wallpaperColor
+                                )
                             ),
 
-                        contentAlignment = Alignment.Center
+                        contentAlignment =
+                            Alignment.Center
                     ) {
 
                         Column(
-                            horizontalAlignment = Alignment.CenterHorizontally
+                            horizontalAlignment =
+                                Alignment.CenterHorizontally,
+
+                            verticalArrangement =
+                                Arrangement.spacedBy(8.dp)
                         ) {
 
                             Text(
-                                text = "No wallpaper",
-                                color = Color.White,
-                                style = MaterialTheme.typography.titleLarge
-                            )
-
-                            Spacer(
-                                modifier = Modifier.height(6.dp)
+                                text = "＋",
+                                fontSize = 42.sp,
+                                color = Color.White
                             )
 
                             Text(
-                                text = "Choose a photo to get started.",
-                                color = Color.White.copy(
-                                    alpha = 0.65f
-                                )
+                                text = "Add a wallpaper",
+                                style =
+                                    MaterialTheme.typography
+                                        .titleLarge,
+
+                                color = Color.White
+                            )
+
+                            Text(
+                                text =
+                                    "Choose a photo from your phone",
+                                color =
+                                    Color.White.copy(
+                                        alpha = 0.6f
+                                    )
                             )
                         }
                     }
@@ -405,49 +427,181 @@ private fun WallpaperTab(
             }
         }
 
+        // Primary action
         Button(
-
             onClick = onPick,
 
             modifier = Modifier
                 .fillMaxWidth()
-                .height(56.dp),
+                .height(58.dp),
 
-            shape = RoundedCornerShape(28.dp)
+            shape = RoundedCornerShape(30.dp)
         ) {
 
             Text(
-                text = "＋  Choose wallpaper",
-                fontSize = 16.sp
+                text = "＋  Add wallpaper",
+                fontSize = 17.sp
             )
         }
 
-        OutlinedButton(
+        // Secondary actions
+        Row(
+            modifier = Modifier.fillMaxWidth(),
 
-            onClick = {
-
-                onChange(
-                    config.copy(
-                        wallpaperUri = null,
-                        wallpaperColor = 0xFF101114
-                    )
-                )
-            },
-
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(52.dp),
-
-            shape = RoundedCornerShape(26.dp)
+            horizontalArrangement =
+                Arrangement.spacedBy(12.dp)
         ) {
 
-            Text("Use solid background")
+            OutlinedButton(
+                onClick = {
+
+                    onChange(
+                        config.copy(
+                            wallpaperUri = null,
+                            wallpaperColor =
+                                0xFF101114
+                        )
+                    )
+                },
+
+                modifier = Modifier
+                    .weight(1f)
+                    .height(54.dp),
+
+                shape = RoundedCornerShape(27.dp)
+            ) {
+
+                Text("Solid")
+            }
+
+            OutlinedButton(
+                onClick = {
+                    // Editing is handled from the Edit tab.
+                },
+
+                modifier = Modifier
+                    .weight(1f)
+                    .height(54.dp),
+
+                shape = RoundedCornerShape(27.dp)
+            ) {
+
+                Text("Edit text")
+            }
+        }
+
+        // Status card
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = RoundedCornerShape(24.dp)
+        ) {
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(18.dp),
+
+                verticalAlignment =
+                    Alignment.CenterVertically
+            ) {
+
+                Column(
+                    modifier = Modifier.weight(1f),
+
+                    verticalArrangement =
+                        Arrangement.spacedBy(4.dp)
+                ) {
+
+                    Text(
+                        text = "Wallpaper status",
+
+                        style =
+                            MaterialTheme.typography
+                                .titleMedium,
+
+                        color = Color.White
+                    )
+
+                    Text(
+                        text =
+                            if (
+                                config.wallpaperUri != null
+                            ) {
+                                "Photo selected"
+                            } else {
+                                "No photo selected"
+                            },
+
+                        color =
+                            Color(0xFF9E9EA3)
+                    )
+                }
+
+                Text(
+                    text =
+                        if (
+                            config.wallpaperUri != null
+                        ) {
+                            "●"
+                        } else {
+                            "○"
+                        },
+
+                    fontSize = 22.sp,
+
+                    color = Color.White
+                )
+            }
+        }
+
+        // Placeholder summary
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+
+            shape = RoundedCornerShape(24.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(18.dp),
+
+                verticalArrangement =
+                    Arrangement.spacedBy(6.dp)
+            ) {
+
+                Text(
+                    text = "Text holders",
+
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+
+                    color = Color.White
+                )
+
+                Text(
+                    text =
+                        "${config.placeholders.size} of 5 placeholders",
+
+                    color =
+                        Color(0xFF9E9EA3)
+                )
+
+                Text(
+                    text =
+                        "Add or position your text from Edit.",
+
+                    color =
+                        Color(0xFF77777C),
+
+                    style =
+                        MaterialTheme.typography
+                            .bodyMedium
+                )
+            }
         }
     }
 }
-
-@Composable
-private fun EditorTab(
     config: WallpaperConfig,
     onChange: (WallpaperConfig) -> Unit
 ) {
