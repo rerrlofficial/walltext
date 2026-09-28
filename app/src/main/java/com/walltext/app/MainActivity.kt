@@ -1555,70 +1555,168 @@ private fun HistoryTab(
     onUse: (WallpaperConfig) -> Unit
 ) {
 
-    if (items.isEmpty()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(
+                start = 18.dp,
+                end = 18.dp,
+                top = 10.dp,
+                bottom = 24.dp
+            )
+    ) {
 
-        Box(
-
-            modifier = Modifier.fillMaxSize(),
-
-            contentAlignment =
-                Alignment.Center
+        Column(
+            verticalArrangement = Arrangement.spacedBy(4.dp)
         ) {
 
             Text(
-                "No history yet"
+                text = "History",
+                style = MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
+
+            Text(
+                text = "Your last 10 wallpaper setups.",
+                style = MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF9E9EA3)
             )
         }
 
-    } else {
+        Spacer(
+            modifier = Modifier.height(18.dp)
+        )
 
-        LazyColumn(
+        if (items.isEmpty()) {
 
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(16.dp),
+            Card(
+                modifier = Modifier.fillMaxWidth(),
+                shape = RoundedCornerShape(26.dp)
+            ) {
 
-            verticalArrangement =
-                Arrangement.spacedBy(10.dp)
-        ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(28.dp),
 
-            items(items) { config ->
+                    horizontalAlignment =
+                        Alignment.CenterHorizontally,
 
-                Card(
-
-                    modifier =
-                        Modifier.fillMaxWidth(),
-
-                    shape =
-                        RoundedCornerShape(22.dp)
+                    verticalArrangement =
+                        Arrangement.spacedBy(8.dp)
                 ) {
 
-                    Row(
+                    Text(
+                        text = "◷",
+                        fontSize = 38.sp,
+                        color = Color.White
+                    )
 
-                        modifier =
-                            Modifier.padding(14.dp),
+                    Text(
+                        text = "No history yet",
+                        style =
+                            MaterialTheme.typography.titleLarge,
+                        color = Color.White
+                    )
 
-                        verticalAlignment =
-                            Alignment.CenterVertically
+                    Text(
+                        text =
+                            "Your saved wallpaper configurations will appear here.",
+                        color = Color(0xFF9E9EA3)
+                    )
+                }
+            }
+
+        } else {
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                verticalArrangement =
+                    Arrangement.spacedBy(12.dp)
+            ) {
+
+                items(items) { config ->
+
+                    Card(
+                        modifier = Modifier.fillMaxWidth(),
+                        shape = RoundedCornerShape(24.dp)
                     ) {
 
-                        Text(
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
 
-                            text =
-                                "${config.placeholders.size} placeholders",
-
-                            modifier =
-                                Modifier.weight(1f)
-                        )
-
-                        TextButton(
-
-                            onClick = {
-                                onUse(config)
-                            }
+                            verticalAlignment =
+                                Alignment.CenterVertically
                         ) {
 
-                            Text("Use")
+                            Box(
+                                modifier = Modifier
+                                    .background(
+                                        Color(0xFF2C2C2E),
+                                        RoundedCornerShape(16.dp)
+                                    )
+                                    .padding(14.dp)
+                            ) {
+
+                                Text(
+                                    text = "▣",
+                                    fontSize = 20.sp,
+                                    color = Color.White
+                                )
+                            }
+
+                            Spacer(
+                                modifier = Modifier.width(14.dp)
+                            )
+
+                            Column(
+                                modifier =
+                                    Modifier.weight(1f),
+
+                                verticalArrangement =
+                                    Arrangement.spacedBy(4.dp)
+                            ) {
+
+                                Text(
+                                    text =
+                                        if (
+                                            config.wallpaperUri != null
+                                        ) {
+                                            "Photo wallpaper"
+                                        } else {
+                                            "Solid wallpaper"
+                                        },
+
+                                    style =
+                                        MaterialTheme.typography
+                                            .titleMedium,
+
+                                    color = Color.White
+                                )
+
+                                Text(
+                                    text =
+                                        "${config.placeholders.size} text holder${
+                                            if (
+                                                config.placeholders.size != 1
+                                            ) "s" else ""
+                                        }",
+
+                                    color =
+                                        Color(0xFF9E9EA3)
+                                )
+                            }
+
+                            TextButton(
+                                onClick = {
+                                    onUse(config)
+                                }
+                            ) {
+
+                                Text("Use")
+                            }
                         }
                     }
                 }
@@ -1634,97 +1732,280 @@ private fun SettingsTab(
 ) {
 
     Column(
-
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxSize()
             .verticalScroll(
                 rememberScrollState()
             )
-            .padding(16.dp),
+            .padding(
+                start = 18.dp,
+                end = 18.dp,
+                top = 10.dp,
+                bottom = 24.dp
+            ),
 
         verticalArrangement =
-            Arrangement.spacedBy(14.dp)
+            Arrangement.spacedBy(16.dp)
     ) {
 
-        Text(
-
-            text = "Settings",
-
-            style =
-                MaterialTheme.typography.headlineSmall
-        )
-
-        Text(
-            text =
-                "Dynamic wallpaper refresh interval",
-
-            style =
-                MaterialTheme.typography.titleMedium
-        )
-
-        Row(
-
-            horizontalArrangement =
-                Arrangement.spacedBy(8.dp)
+        Column(
+            verticalArrangement =
+                Arrangement.spacedBy(4.dp)
         ) {
 
-            listOf(
-                15,
-                30,
-                60
-            ).forEach { minutes ->
+            Text(
+                text = "Settings",
+                style =
+                    MaterialTheme.typography.headlineLarge,
+                color = Color.White
+            )
 
-                FilterChip(
+            Text(
+                text =
+                    "Control how WallText behaves.",
+                style =
+                    MaterialTheme.typography.bodyLarge,
+                color = Color(0xFF9E9EA3)
+            )
+        }
 
-                    selected =
-                        config.dynamicIntervalMinutes ==
-                            minutes,
+        // Dynamic wallpaper
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(26.dp)
+        ) {
 
-                    onClick = {
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement =
+                    Arrangement.spacedBy(14.dp)
+            ) {
 
-                        onChange(
-                            config.copy(
-                                dynamicIntervalMinutes =
-                                    minutes
+                Row(
+                    verticalAlignment =
+                        Alignment.CenterVertically
+                ) {
+
+                    Box(
+                        modifier = Modifier
+                            .background(
+                                Color(0xFF2C2C2E),
+                                RoundedCornerShape(16.dp)
                             )
-                        )
-                    },
-
-                    label = {
+                            .padding(14.dp)
+                    ) {
 
                         Text(
-                            "$minutes min"
+                            text = "↻",
+                            fontSize = 20.sp,
+                            color = Color.White
                         )
                     }
+
+                    Spacer(
+                        modifier = Modifier.width(14.dp)
+                    )
+
+                    Column(
+                        modifier =
+                            Modifier.weight(1f),
+
+                        verticalArrangement =
+                            Arrangement.spacedBy(3.dp)
+                    ) {
+
+                        Text(
+                            text =
+                                "Dynamic wallpaper",
+
+                            style =
+                                MaterialTheme.typography
+                                    .titleMedium,
+
+                            color = Color.White
+                        )
+
+                        Text(
+                            text =
+                                "Change displayed entries automatically.",
+
+                            color =
+                                Color(0xFF9E9EA3)
+                        )
+                    }
+                }
+
+                Text(
+                    text =
+                        "Refresh interval",
+
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+
+                    color = Color.White
+                )
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement =
+                        Arrangement.spacedBy(8.dp)
+                ) {
+
+                    listOf(
+                        15,
+                        30,
+                        60
+                    ).forEach { minutes ->
+
+                        FilterChip(
+
+                            selected =
+                                config.dynamicIntervalMinutes ==
+                                    minutes,
+
+                            onClick = {
+
+                                onChange(
+                                    config.copy(
+                                        dynamicIntervalMinutes =
+                                            minutes
+                                    )
+                                )
+                            },
+
+                            label = {
+                                Text("$minutes min")
+                            }
+                        )
+                    }
+                }
+
+                Text(
+                    text =
+                        "Android controls the exact execution time of background work. The selected interval is the requested minimum period.",
+
+                    style =
+                        MaterialTheme.typography
+                            .bodySmall,
+
+                    color =
+                        Color(0xFF77777C)
                 )
             }
         }
 
+        // Text holder limits
         Card(
-
-            modifier =
-                Modifier.fillMaxWidth(),
-
-            shape =
-                RoundedCornerShape(22.dp)
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(26.dp)
         ) {
 
-            Text(
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement =
+                    Arrangement.spacedBy(8.dp)
+            ) {
 
-                text =
-                    "Dynamic mode supports up to 10 entries per placeholder.",
+                Text(
+                    text = "Text holders",
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+                    color = Color.White
+                )
 
-                modifier =
-                    Modifier.padding(16.dp),
+                Text(
+                    text =
+                        "Up to 5 holders per wallpaper.",
 
-                color =
-                    MaterialTheme.colorScheme
-                        .onSurfaceVariant
-            )
+                    color =
+                        Color(0xFF9E9EA3)
+                )
+
+                Text(
+                    text =
+                        "Each dynamic holder can contain up to 10 entries.",
+
+                    color =
+                        Color(0xFF9E9EA3)
+                )
+            }
+        }
+
+        // Wallpaper mode
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(26.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement =
+                    Arrangement.spacedBy(8.dp)
+            ) {
+
+                Text(
+                    text = "Wallpaper",
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+                    color = Color.White
+                )
+
+                Text(
+                    text =
+                        if (
+                            config.wallpaperUri != null
+                        ) {
+                            "Using a photo from your device."
+                        } else {
+                            "Using a solid background."
+                        },
+
+                    color =
+                        Color(0xFF9E9EA3)
+                )
+            }
+        }
+
+        // About
+        Card(
+            modifier = Modifier.fillMaxWidth(),
+            shape = RoundedCornerShape(26.dp)
+        ) {
+
+            Column(
+                modifier = Modifier.padding(18.dp),
+                verticalArrangement =
+                    Arrangement.spacedBy(6.dp)
+            ) {
+
+                Text(
+                    text = "WallText",
+                    style =
+                        MaterialTheme.typography
+                            .titleMedium,
+                    color = Color.White
+                )
+
+                Text(
+                    text = "Personal wallpapers with your own words.",
+
+                    color =
+                        Color(0xFF9E9EA3)
+                )
+
+                Text(
+                    text = "Version 1.0",
+
+                    color =
+                        Color(0xFF77777C)
+                )
+            }
         }
     }
 }
-
 private fun applyWallpaper(
     context: Context,
     config: WallpaperConfig
