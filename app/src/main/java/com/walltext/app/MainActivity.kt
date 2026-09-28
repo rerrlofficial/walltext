@@ -1052,66 +1052,109 @@ private fun PlaceholderCard(
         mutableStateOf(false)
     }
 
+    val typeLabel = when (placeholder.type) {
+        PlaceholderType.TEXT -> "Text"
+        PlaceholderType.TABLE -> "Table"
+        PlaceholderType.CHECKLIST -> "Checklist"
+        PlaceholderType.BULLETS -> "Bullets"
+    }
+
+    val modeLabel = when (placeholder.mode) {
+        DisplayMode.STATIC -> "Static"
+        DisplayMode.DYNAMIC -> "Dynamic"
+    }
+
+    val icon = when (placeholder.type) {
+        PlaceholderType.TEXT -> "T"
+        PlaceholderType.TABLE -> "▦"
+        PlaceholderType.CHECKLIST -> "☑"
+        PlaceholderType.BULLETS -> "•"
+    }
+
     Card(
-
         modifier = Modifier.fillMaxWidth(),
-
-        shape = RoundedCornerShape(22.dp)
+        shape = RoundedCornerShape(24.dp)
     ) {
 
         Column(
-
-            modifier = Modifier.padding(14.dp),
-
-            verticalArrangement =
-                Arrangement.spacedBy(8.dp)
+            modifier = Modifier.padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
 
+            // Header row
             Row(
-                verticalAlignment =
-                    Alignment.CenterVertically
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
             ) {
 
-                Text(
+                Box(
+                    modifier = Modifier
+                        .background(
+                            Color(0xFF2C2C2E),
+                            RoundedCornerShape(16.dp)
+                        )
+                        .padding(
+                            horizontal = 14.dp,
+                            vertical = 10.dp
+                        ),
 
-                    text = placeholder.title,
+                    contentAlignment = Alignment.Center
+                ) {
 
-                    modifier = Modifier.weight(1f),
+                    Text(
+                        text = icon,
+                        color = Color.White,
+                        fontSize = 18.sp
+                    )
+                }
 
-                    style =
-                        MaterialTheme.typography.titleMedium
+                Spacer(
+                    modifier = Modifier.width(12.dp)
                 )
 
-                TextButton(
+                Column(
+                    modifier = Modifier.weight(1f),
+                    verticalArrangement =
+                        Arrangement.spacedBy(3.dp)
+                ) {
 
+                    Text(
+                        text = placeholder.title,
+                        style =
+                            MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
+
+                    Text(
+                        text = "$typeLabel  •  $modeLabel",
+                        style =
+                            MaterialTheme.typography.bodyMedium,
+                        color = Color(0xFF9E9EA3)
+                    )
+                }
+
+                TextButton(
                     onClick = {
                         expanded = !expanded
                     }
                 ) {
 
                     Text(
-                        if (expanded) {
-                            "Close"
-                        } else {
-                            "Edit"
-                        }
+                        text =
+                            if (expanded) {
+                                "Done"
+                            } else {
+                                "Edit"
+                            }
                     )
-                }
-
-                TextButton(
-                    onClick = onDelete
-                ) {
-
-                    Text("Delete")
                 }
             }
 
             if (expanded) {
 
+                // Name
                 OutlinedTextField(
-
-                    value =
-                        placeholder.title,
+                    value = placeholder.title,
 
                     onValueChange = { value ->
 
@@ -1123,19 +1166,24 @@ private fun PlaceholderCard(
                     },
 
                     label = {
-                        Text("Name")
+                        Text("Holder name")
                     },
 
                     singleLine = true,
 
-                    modifier =
-                        Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth()
                 )
 
-                Text("Type")
+                // Type
+                Text(
+                    text = "Holder type",
+                    style =
+                        MaterialTheme.typography.titleMedium,
+                    color = Color.White
+                )
 
                 Row(
-
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement =
                         Arrangement.spacedBy(8.dp)
                 ) {
@@ -1145,10 +1193,8 @@ private fun PlaceholderCard(
                         .forEach { type ->
 
                             FilterChip(
-
                                 selected =
-                                    placeholder.type ==
-                                        type,
+                                    placeholder.type == type,
 
                                 onClick = {
 
@@ -1162,29 +1208,40 @@ private fun PlaceholderCard(
                                 label = {
 
                                     Text(
-                                        type.name
-                                            .lowercase()
-                                            .replaceFirstChar {
-                                                character ->
-                                                character
-                                                    .uppercase()
-                                            }
+                                        when (type) {
+                                            PlaceholderType.TEXT ->
+                                                "Text"
+
+                                            PlaceholderType.TABLE ->
+                                                "Table"
+
+                                            PlaceholderType.CHECKLIST ->
+                                                "Checklist"
+
+                                            PlaceholderType.BULLETS ->
+                                                "Bullets"
+                                        }
                                     )
                                 }
                             )
                         }
                 }
 
-                Text("Display mode")
+                // Display mode
+                Text(
+                    text = "Display mode",
+                    style =
+                        MaterialTheme.typography.titleMedium,
+                    color = Color.White
+                )
 
                 Row(
-
+                    modifier = Modifier.fillMaxWidth(),
                     horizontalArrangement =
                         Arrangement.spacedBy(8.dp)
                 ) {
 
                     FilterChip(
-
                         selected =
                             placeholder.mode ==
                                 DisplayMode.STATIC,
@@ -1205,7 +1262,6 @@ private fun PlaceholderCard(
                     )
 
                     FilterChip(
-
                         selected =
                             placeholder.mode ==
                                 DisplayMode.DYNAMIC,
@@ -1226,13 +1282,20 @@ private fun PlaceholderCard(
                     )
                 }
 
+                // Content
                 if (
                     placeholder.mode ==
                     DisplayMode.STATIC
                 ) {
 
-                    OutText(
+                    Text(
+                        text = "Content",
+                        style =
+                            MaterialTheme.typography.titleMedium,
+                        color = Color.White
+                    )
 
+                    OutText(
                         value =
                             placeholder.entries
                                 .firstOrNull()
@@ -1251,9 +1314,61 @@ private fun PlaceholderCard(
 
                 } else {
 
-                    Text(
-                        "Dynamic entries (maximum 10)"
-                    )
+                    Row(
+                        modifier =
+                            Modifier.fillMaxWidth(),
+
+                        verticalAlignment =
+                            Alignment.CenterVertically
+                    ) {
+
+                        Column(
+                            modifier =
+                                Modifier.weight(1f)
+                        ) {
+
+                            Text(
+                                text =
+                                    "Dynamic entries",
+
+                                style =
+                                    MaterialTheme.typography
+                                        .titleMedium,
+
+                                color = Color.White
+                            )
+
+                            Text(
+                                text =
+                                    "${placeholder.entries.size}/10 entries",
+
+                                color =
+                                    Color(0xFF9E9EA3)
+                            )
+                        }
+
+                        TextButton(
+
+                            onClick = {
+
+                                if (
+                                    placeholder.entries.size < 10
+                                ) {
+
+                                    onChange(
+                                        placeholder.copy(
+                                            entries =
+                                                placeholder.entries +
+                                                    ""
+                                        )
+                                    )
+                                }
+                            }
+                        ) {
+
+                            Text("+ Add")
+                        }
+                    }
 
                     placeholder.entries
                         .take(10)
@@ -1262,7 +1377,6 @@ private fun PlaceholderCard(
                                 entry ->
 
                             OutText(
-
                                 value = entry,
 
                                 label =
@@ -1298,56 +1412,79 @@ private fun PlaceholderCard(
                                 }
                             )
                         }
+                }
 
-                    if (
-                        placeholder.entries.size < 10
+                // Font size
+                Card(
+                    modifier =
+                        Modifier.fillMaxWidth(),
+
+                    shape =
+                        RoundedCornerShape(18.dp)
+                ) {
+
+                    Column(
+                        modifier =
+                            Modifier.padding(14.dp),
+
+                        verticalArrangement =
+                            Arrangement.spacedBy(4.dp)
                     ) {
 
-                        TextButton(
+                        Text(
+                            text =
+                                "Font size  ${
+                                    placeholder.fontSizeSp
+                                        .toInt()
+                                } sp",
 
-                            onClick = {
+                            style =
+                                MaterialTheme.typography
+                                    .titleMedium,
+
+                            color = Color.White
+                        )
+
+                        Slider(
+
+                            value =
+                                placeholder.fontSizeSp,
+
+                            onValueChange = { value ->
 
                                 onChange(
                                     placeholder.copy(
-                                        entries =
-                                            placeholder.entries +
-                                                ""
+                                        fontSizeSp =
+                                            value
                                     )
                                 )
-                            }
-                        ) {
+                            },
 
-                            Text(
-                                "+ Add entry"
-                            )
-                        }
+                            valueRange =
+                                12f..48f
+                        )
                     }
                 }
 
-                Text(
-                    text =
-                        "Font size: ${
-                            placeholder.fontSizeSp.toInt()
-                        } sp"
-                )
+                // Delete
+                OutlinedButton(
 
-                Slider(
+                    onClick = onDelete,
 
-                    value =
-                        placeholder.fontSizeSp,
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
 
-                    onValueChange = { value ->
+                    shape =
+                        RoundedCornerShape(25.dp)
+                ) {
 
-                        onChange(
-                            placeholder.copy(
-                                fontSizeSp = value
-                            )
-                        )
-                    },
-
-                    valueRange =
-                        12f..48f
-                )
+                    Text(
+                        text = "Delete holder",
+                        color = Color(0xFFFF453A)
+                    )
+                }
             }
         }
     }
