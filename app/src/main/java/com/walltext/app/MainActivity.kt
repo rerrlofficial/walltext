@@ -1,5 +1,4 @@
 package com.walltext.app
-
 import androidx.compose.foundation.gestures.awaitEachGesture
 import androidx.compose.foundation.gestures.awaitFirstDown
 import androidx.compose.ui.input.pointer.PointerEventPass
@@ -835,13 +834,15 @@ BoxWithConstraints(
 
         val down =
             awaitFirstDown(
-                requireUnconsumed = false
+                requireUnconsumed = false,
+                pass = PointerEventPass.Initial
             )
 
         down.consume()
 
-        var previousPosition =
-            down.position
+        var currentX = placeholder.x
+        var currentY = placeholder.y
+        var previousPosition = down.position
 
         while (true) {
 
@@ -884,9 +885,9 @@ BoxWithConstraints(
                 continue
             }
 
-            val newX =
+            currentX =
                 (
-                    placeholder.x +
+                    currentX +
                         delta.x /
                         previewWidthPx
                 ).coerceIn(
@@ -895,9 +896,9 @@ BoxWithConstraints(
                         placeholder.width / 2f
                 )
 
-            val newY =
+            currentY =
                 (
-                    placeholder.y +
+                    currentY +
                         delta.y /
                         previewHeightPx
                 ).coerceIn(
@@ -915,8 +916,8 @@ BoxWithConstraints(
                             itemIndex == index
                         ) {
                             item.copy(
-                                x = newX,
-                                y = newY
+                                x = currentX,
+                                y = currentY
                             )
                         } else {
                             item
