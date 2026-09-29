@@ -2148,11 +2148,16 @@ private fun applyWallpaper(
                 )
             }
 
-    val rendered =
-        WallpaperRenderer.render(
-            bitmap,
-            config
-        )
+    val textScale =
+    context.resources.displayMetrics.scaledDensity *
+        (bitmap.width / 1080f)
+
+val rendered =
+    WallpaperRenderer.render(
+        base = bitmap,
+        config = config,
+        textScale = textScale
+    )
 
     val output =
         ByteArrayOutputStream()
