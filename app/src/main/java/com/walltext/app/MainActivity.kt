@@ -795,108 +795,129 @@ private fun EditorTab(
                 )
 
                 // Draggable placeholders
-                config.placeholders
-                    .forEachIndexed { index, placeholder ->
+BoxWithConstraints(
+    modifier = Modifier.fillMaxSize()
+) {
 
-                        val xOffset =
-                            (
-                                placeholder.x * 320f -
-                                    160f
-                                ).dp
+    val density = LocalDensity.current
 
-                        val yOffset =
-                            (
-                                placeholder.y * 420f -
-                                    20f
-                                ).dp
+    config.placeholders
+        .forEachIndexed { index, placeholder ->
 
-                        Text(
-                            text =
-                                previewText(
-                                    placeholder
-                                ),
+            val xOffset =
+                maxWidth *
+                    (
+                        placeholder.x -
+                            placeholder.width / 2f
+                    )
 
-                            color =
-                                Color.White.copy(
-                                    alpha =
-                                        placeholder.opacity
-                                ),
+            val yOffset =
+                maxHeight * placeholder.y
 
-                            fontSize =
-                                placeholder.fontSizeSp.sp,
+            Text(
+                text = previewText(placeholder),
 
-                            modifier = Modifier
-                                .fillMaxWidth(
-                                    placeholder.width
-                                )
-                                .offset(
-                                    x = xOffset,
-                                    y = yOffset
-                                )
-                                .pointerInput(
-                                    placeholder.id
-                                ) {
+                color =
+                    Color.White.copy(
+                        alpha = placeholder.opacity
+                    ),
 
-                                    detectDragGestures {
+                fontSize =
+                    placeholder.fontSizeSp.sp,
 
-                                            change,
-                                            dragAmount ->
-
-                                        change.consume()
-
-                                        val newX =
-                                            (
-                                                placeholder.x +
-                                                    dragAmount.x /
-                                                    320f
-                                                ).coerceIn(
-                                                0f,
-                                                1f
-                                            )
-
-                                        val newY =
-                                            (
-                                                placeholder.y +
-                                                    dragAmount.y /
-                                                    420f
-                                                ).coerceIn(
-                                                0f,
-                                                1f
-                                            )
-
-                                        val updated =
-                                            config
-                                                .placeholders
-                                                .mapIndexed {
-                                                        itemIndex,
-                                                        item ->
-
-                                                    if (
-                                                        itemIndex ==
-                                                        index
-                                                    ) {
-
-                                                        item.copy(
-                                                            x = newX,
-                                                            y = newY
-                                                        )
-
-                                                    } else {
-
-                                                        item
-                                                    }
-                                                }
-
-                                        onChange(
-                                            config.copy(
-                                                placeholders =
-                                                    updated
-                                            )
-                                        )
-                                    }
-                                }
+                modifier =
+                    Modifier
+                        .fillMaxWidth(
+                            placeholder.width
                         )
-                    }
+                        .offset(
+                            x = xOffset,
+                            y = yOffset
+                        )
+                        .pointerInput(
+                            placeholder.id
+                        ) {
+
+                            detectDragGestures {
+
+                                change,
+                                dragAmount ->
+
+                                change.consume()
+
+                                val previewWidthPx =
+                                    with(density) {
+                                        maxWidth.toPx()
+                                    }
+
+                                val previewHeightPx =
+                                    with(density) {
+                                        maxHeight.toPx()
+                                    }
+
+                                if (
+                                    previewWidthPx <= 0f ||
+                                    previewHeightPx <= 0f
+                                ) {
+                                    return@detectDragGestures
+                                }
+
+                                val newX =
+                                    (
+                                        placeholder.x +
+                                            dragAmount.x /
+                                            previewWidthPx
+                                    ).coerceIn(
+                                        placeholder.width / 2f,
+                                        1f -
+                                            placeholder.width /
+                                            2f
+                                    )
+
+                                val newY =
+                                    (
+                                        placeholder.y +
+                                            dragAmount.y /
+                                            previewHeightPx
+                                    ).coerceIn(
+                                        0f,
+                                        1f
+                                    )
+
+                                val updated =
+                                    config
+                                        .placeholders
+                                        .mapIndexed {
+                                            itemIndex,
+                                            item ->
+
+                                            if (
+                                                itemIndex ==
+                                                index
+                                            ) {
+
+                                                item.copy(
+                                                    x = newX,
+                                                    y = newY
+                                                )
+
+                                            } else {
+
+                                                item
+                                            }
+                                        }
+
+                                onChange(
+                                    config.copy(
+                                        placeholders =
+                                            updated
+                                    )
+                                )
+                            }
+                        }
+            )
+        }
+}
 
                 if (
                     config.placeholders.isEmpty()
