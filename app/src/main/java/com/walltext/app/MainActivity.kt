@@ -9,6 +9,7 @@ import android.net.Uri
 import android.os.Bundle
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.foundation.layout.heightIn
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.compose.setContent
@@ -804,6 +805,9 @@ BoxWithConstraints(
     config.placeholders
         .forEachIndexed { index, placeholder ->
 
+            val holderWidth =
+                maxWidth * placeholder.width
+
             val xOffset =
                 maxWidth *
                     (
@@ -814,22 +818,11 @@ BoxWithConstraints(
             val yOffset =
                 maxHeight * placeholder.y
 
-            Text(
-                text = previewText(placeholder),
-
-                color =
-                    Color.White.copy(
-                        alpha = placeholder.opacity
-                    ),
-
-                fontSize =
-                    placeholder.fontSizeSp.sp,
-
+            Box(
                 modifier =
                     Modifier
-                        .fillMaxWidth(
-                            placeholder.width
-                        )
+                        .width(holderWidth)
+                        .heightIn(min = 64.dp)
                         .offset(
                             x = xOffset,
                             y = yOffset
@@ -892,8 +885,7 @@ BoxWithConstraints(
                                             item ->
 
                                             if (
-                                                itemIndex ==
-                                                index
+                                                itemIndex == index
                                             ) {
 
                                                 item.copy(
@@ -915,7 +907,16 @@ BoxWithConstraints(
                                 )
                             }
                         }
-            )
+            ) {
+
+                Text(
+                    text = previewText(placeholder),
+                    color = Color.White.copy(
+                        alpha = placeholder.opacity
+                    ),
+                    fontSize = placeholder.fontSizeSp.sp
+                )
+            }
         }
 }
 
