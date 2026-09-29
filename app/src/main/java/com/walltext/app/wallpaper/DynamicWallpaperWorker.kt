@@ -74,12 +74,17 @@ class DynamicWallpaperWorker(
                     (interval * 60_000L)
                 ).toInt()
 
-        val rendered =
-            WallpaperRenderer.render(
-                base = bitmap,
-                config = config,
-                dynamicIndex = index
-            )
+        val textScale =
+    applicationContext.resources.displayMetrics.scaledDensity *
+        (bitmap.width / 1080f)
+
+val rendered =
+    WallpaperRenderer.render(
+        base = bitmap,
+        config = config,
+        dynamicIndex = index,
+        textScale = textScale
+    )
 
         val output =
             ByteArrayOutputStream()
