@@ -831,10 +831,12 @@ BoxWithConstraints(
                             placeholder.id
                         ) {
 
-                            detectDragGestures {
+                            detectDragGestures(
+    startDragImmediately = true
+) {
 
-                                change,
-                                dragAmount ->
+    change,
+    dragAmount ->
 
                                 change.consume()
 
