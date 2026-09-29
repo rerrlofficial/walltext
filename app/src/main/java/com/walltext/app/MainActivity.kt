@@ -1,5 +1,7 @@
 package com.walltext.app
-
+import androidx.compose.ui.input.pointer.PointerEventPass
+import androidx.compose.ui.input.pointer.awaitEachGesture
+import androidx.compose.ui.input.pointer.awaitFirstDown
 import android.app.WallpaperManager
 import android.content.Context
 import android.content.Intent
@@ -827,88 +829,108 @@ BoxWithConstraints(
                             x = xOffset,
                             y = yOffset
                         )
-                        .pointerInput(
-                            placeholder.id
+                        .pointerInput(placeholder.id) {
+
+    awaitEachGesture {
+
+        val down =
+            awaitFirstDown(
+                requireUnconsumed = false
+            )
+
+        down.consume()
+
+        var previousPosition =
+            down.position
+
+        while (true) {
+
+            val event =
+                awaitPointerEvent(
+                    PointerEventPass.Initial
+                )
+
+            val change =
+                event.changes.firstOrNull()
+                    ?: break
+
+            if (!change.pressed) {
+                break
+            }
+
+            val delta =
+                change.position -
+                    previousPosition
+
+            previousPosition =
+                change.position
+
+            change.consume()
+
+            val previewWidthPx =
+                with(density) {
+                    maxWidth.toPx()
+                }
+
+            val previewHeightPx =
+                with(density) {
+                    maxHeight.toPx()
+                }
+
+            if (
+                previewWidthPx <= 0f ||
+                previewHeightPx <= 0f
+            ) {
+                continue
+            }
+
+            val newX =
+                (
+                    placeholder.x +
+                        delta.x /
+                        previewWidthPx
+                ).coerceIn(
+                    placeholder.width / 2f,
+                    1f -
+                        placeholder.width / 2f
+                )
+
+            val newY =
+                (
+                    placeholder.y +
+                        delta.y /
+                        previewHeightPx
+                ).coerceIn(
+                    0f,
+                    1f
+                )
+
+            val updated =
+                config.placeholders
+                    .mapIndexed {
+                        itemIndex,
+                        item ->
+
+                        if (
+                            itemIndex == index
                         ) {
-
-                            detectDragGestures(
-    startDragImmediately = true
-) {
-
-    change,
-    dragAmount ->
-
-                                change.consume()
-
-                                val previewWidthPx =
-                                    with(density) {
-                                        maxWidth.toPx()
-                                    }
-
-                                val previewHeightPx =
-                                    with(density) {
-                                        maxHeight.toPx()
-                                    }
-
-                                if (
-                                    previewWidthPx <= 0f ||
-                                    previewHeightPx <= 0f
-                                ) {
-                                    return@detectDragGestures
-                                }
-
-                                val newX =
-                                    (
-                                        placeholder.x +
-                                            dragAmount.x /
-                                            previewWidthPx
-                                    ).coerceIn(
-                                        placeholder.width / 2f,
-                                        1f -
-                                            placeholder.width /
-                                            2f
-                                    )
-
-                                val newY =
-                                    (
-                                        placeholder.y +
-                                            dragAmount.y /
-                                            previewHeightPx
-                                    ).coerceIn(
-                                        0f,
-                                        1f
-                                    )
-
-                                val updated =
-                                    config
-                                        .placeholders
-                                        .mapIndexed {
-                                            itemIndex,
-                                            item ->
-
-                                            if (
-                                                itemIndex == index
-                                            ) {
-
-                                                item.copy(
-                                                    x = newX,
-                                                    y = newY
-                                                )
-
-                                            } else {
-
-                                                item
-                                            }
-                                        }
-
-                                onChange(
-                                    config.copy(
-                                        placeholders =
-                                            updated
-                                    )
-                                )
-                            }
+                            item.copy(
+                                x = newX,
+                                y = newY
+                            )
+                        } else {
+                            item
                         }
+                    }
+
+            onChange(
+                config.copy(
+                    placeholders = updated
+                )
+            )
+        }
+    }
+}
             ) {
 
                 Text(
