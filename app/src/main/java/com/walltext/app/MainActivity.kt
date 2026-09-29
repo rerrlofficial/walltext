@@ -1097,18 +1097,35 @@ BoxWithConstraints(
 
                 onClick = {
 
-                    val newPlaceholder =
-                        TextPlaceholder(
+                    val positionIndex =
+    config.placeholders.size
 
-                            id = UUID
-                                .randomUUID()
-                                .toString(),
+val positions =
+    listOf(
+        0.5f to 0.25f,
+        0.5f to 0.45f,
+        0.5f to 0.65f,
+        0.5f to 0.80f,
+        0.25f to 0.50f
+    )
 
-                            title =
-                                "Placeholder ${
-                                    config.placeholders.size + 1
-                                }"
-                        )
+val position =
+    positions[positionIndex]
+
+val newPlaceholder =
+    TextPlaceholder(
+        id = UUID
+            .randomUUID()
+            .toString(),
+
+        title =
+            "Placeholder ${
+                positionIndex + 1
+            }",
+
+        x = position.first,
+        y = position.second
+    )
 
                     onChange(
                         config.copy(
